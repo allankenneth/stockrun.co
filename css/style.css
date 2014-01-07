@@ -1,0 +1,87 @@
+.top {
+	margin-top: 15px;
+}
+#shoppinglist {
+/*	display: none;*/
+	margin: 0 0 20px 0;
+	padding: 0;
+}
+#shoppinglist li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+input {
+	font-size: 16px;
+}
+.search {
+	font-size: 24px;
+	width: 60%;
+}
+.list,
+.list li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+.alt {
+	background: #F1F1F1;
+}
+.category {
+	font-size: small;
+}
+.name {
+	font-size: 24px;
+	font-weight: bold;
+}
+.sku {
+/*	background: #FFF;*/
+	border-radius: 3px;
+	font-size: 20px;
+}
+.price {
+	font-size: 18px;
+}
+#stock { 
+	margin-bottom: 200px; 
+}
+.download { }
+.up {
+
+}
+.buttons {float:right;}
+.showman,
+.refresh {
+}
+#manage {
+	display: none;
+}
+.shoplist {
+	float: right;
+}
+
+
+.addtolist a {
+
+}
+/*
+ * DESKTOPS ONLY
+ */
+@media only screen and (min-width: 768px) {
+	.download { display: block; }
+	.category {
+		width: 15%;
+	}
+	.name {
+		width: 45%;
+	}
+	.sku {
+		width: 10%;
+	}
+	.price {
+		width: 10%;
+	}
+	.shoplist {
+		width: 5%;
+	}
+}
