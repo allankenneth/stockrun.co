@@ -186,7 +186,7 @@ function sortLocal() {
 		//var dadate = (new Date(parseInt(itemKey))).toUTCString();
 		var values = localStorage.getItem(itemKey);
 		values = values.split(";"); //create an array of the values
-		//alert(values);
+		//console.log(values);
 		var cat = values[0];
 		var name = values[1];
 		var sku = values[2];
@@ -202,30 +202,26 @@ function sortLocal() {
 	
 }
 
-function getAllItems($basket) {
+function getAllItems() {
+	var local = sortLocal();
+	//console.log(foo[0][2]);
 	var stockList = ""; //the variable that will hold our html
-	var i = 0;
-	var logLength = localStorage.length-1; //how many items are in the database starting with zero
 	var subtotal = 0;
-	//now we are going to loop through each item in the database
-	for (i = 0; i <= logLength; i++) {
-		//lets setup some variables for the key and values
-		var itemKey = localStorage.key(i);
-		//var dadate = (new Date(parseInt(itemKey))).toUTCString();
-		var values = localStorage.getItem(itemKey);
-		values = values.split(";"); //create an array of the values
-		//alert(values);
-		var cat = values[0];
-		var name = values[1];
-		var sku = values[2];
-		var price = parseFloat(values[3]);
+	local.forEach(function(entry) {
+	    //console.log(entry[4]);
+		var itemKey = entry[0];
+		var cat = entry[1];
+		var name = entry[2];
+		var sku = entry[3];
+		var price = parseFloat(entry[4]);
 		var subtotal = subtotal + price;
+		console.log(parseInt(subtotal));
 		//now that we have the item, lets add it as a list item
 		stockList += '<li class="dd-item" data-id="'+itemKey+'">';
 		stockList += '<a href="#'+itemKey+'" class="remove btn btn-xs btn-default">x</a> 	';
 		stockList += ''+cat+' - '+name+' - '+sku+' - $'+price;
 		stockList += '</li>';
-	}
+	});
 	subtotal = subtotal.toFixed(2);
 	var tax = (subtotal * .12).toFixed(2);
 	var totalorder = parseFloat(subtotal) + parseFloat(tax);
@@ -241,49 +237,14 @@ function getAllItems($basket) {
 	stockList += '<button class="send btn btn-sm btn-success" href="send.php">Email Basket</button>';
 	stockList += '</form>';
 	stockList += '<li>';
+	
 	//if there were no items in the database
-	if (subtotal == 0) {
-		stockList = '<li class="empty">List Currently Empty</li>';
-	}
+	// if (subtotal == 0) {
+	// 	stockList = '<li class="empty">List Currently Empty</li>';
+	// }
 	$("#shoppinglist").html(stockList); //update the ul with the list items
 }
-function sendBasket($basket) {
-	var basket = ""; //the variable that will hold our html
-	var i = 0;
-	var logLength = localStorage.length-1; //how many items are in the database starting with zero
-	var subtotal = 0;
-	//now we are going to loop through each item in the database
-	for (i = 0; i <= logLength; i++) {
-		//lets setup some variables for the key and values
-		var itemKey = localStorage.key(i);
-		//var dadate = (new Date(parseInt(itemKey))).toUTCString();
-		var values = localStorage.getItem(itemKey);
-		values = values.split(";"); //create an array of the values
-		//alert(values);
-		var cat = values[0];
-		var name = values[1];
-		var sku = values[2];
-		var price = parseFloat(values[3]);
-		var subtotal = subtotal + price;
-		//now that we have the item, lets add it as a list item
-		basket += ''+cat+' - '+name+' - '+sku+' - $'+price+'\n';
 
-	}
-	subtotal = subtotal.toFixed(2);
-	var tax = (subtotal * .12).toFixed(2);
-	var totalorder = parseFloat(subtotal) + parseFloat(tax);
-	totalorder = totalorder.toFixed(2);
-	basket += 'Subtotal: $'+subtotal+'\n';
-	basket += 'Tax: $'+tax+'\n';
-	basket += 'Total: $'+totalorder+'\n';
-
-	//if there were no items in the database
-	if (subtotal == 0) {
-		stockList = 'Something went wrong. List Currently Empty.';
-	}
-	// now send the email!
-
-}
 
 </script>
 </body>
