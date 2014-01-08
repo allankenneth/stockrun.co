@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>StockRun.co - Store 5</title>
-<link rel="apple-touch-icon" sizes="120x120" href="rabbit.png">
-<meta name="viewport" content="width=device-width">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<link rel="stylesheet" href="css/bootstrap.css">
-<link rel="stylesheet" href="css/style.css">
-<script src="js/respond.js"></script>
+	<title>StockRun.co - Store 5</title>
+	<link rel="apple-touch-icon" sizes="120x120" href="rabbit.png">
+	<meta name="viewport" content="width=device-width">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" href="css/bootstrap.css">
+	<link rel="stylesheet" href="css/style.css">
+	<script src="js/respond.js"></script>
 </head>
 <body>
 <div id="wrap">
@@ -102,8 +102,6 @@ while (($line = fgetcsv($f)) !== false) {
 		echo "<div class=\"col-md-2 col-lg-2\">";
 		echo " <a class=\"addtolist btn btn-xs btn-default\" data-item=\"".$items."\" href=\"#\">+</a>";
 		echo "</div>\n";
-		
-		// data-name=\"" . $name . "\"
         echo "</div></div>\n";
         echo "</li>\n";
 	}
@@ -115,10 +113,7 @@ fclose($f);
 </div>
 </div>
 </div>
-
-
 <!-- <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script> -->
-
 <script src="js/jquery-1.4.2.min.js"></script>
 <!-- <script src="../../dist/js/bootstrap.min.js"></script> -->
 <script src="js/list.min.js"></script>
@@ -141,6 +136,10 @@ $(function() {
 		valueNames: [ 'category', 'name', 'sku', 'price' ]
 	};
 	var contactList = new List('stock', options);
+	
+	
+	
+	
 	$('.showman').click(function(){
 		$('#manage').slideToggle();
 		return false;
