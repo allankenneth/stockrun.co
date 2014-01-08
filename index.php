@@ -73,6 +73,7 @@
 	  </div>
   </form>
 <?php
+// TODO make this account for " in item names! Dumbass.
 $labels = Array("category", "name", "sku", "price");
 $f = fopen("files/skulist.csv", "r");
 echo "<ul class='list'>\n";
@@ -88,7 +89,7 @@ while (($line = fgetcsv($f)) !== false) {
         echo "<div class=\"".$liclass."row\">\n";
 		echo "<div class=\"col-12 col-xs-12\">\n";
         $count = 0; //reset to 0 for each inner loop
-		$items = '';
+		$items = '1;';
         foreach ($line as $cell) {
                 echo "<div class=\"col-md-2 col-lg-2 ".$labels[$count]."\">";
 				if($count==3) echo '$';
@@ -149,17 +150,39 @@ $(function() {
 	$(".addtolist").click(function(){
     	var newDate = new Date();
         var itemId = newDate.getTime();
-		var item = $(this).attr("data-item");
-        try {
-            localStorage.setItem(itemId, item);
-			getAllItems(0);
-            return false;
-        } catch (e) {
-            if (e == QUOTA_EXCEEDED_ERR) {
-                console.log('Quota exceeded!');
-            }
-        }
-		return false;
+		var items = $(this).attr("data-item");
+		item = items.split(";");
+		sku = item[3];
+		// Check that the item doesn't already exist
+		var local = sortLocal();
+		var addto = 0;
+		var updateKey = 0;
+		var updateQty = 0;
+		local.forEach(function(entry) {		
+			if (item[3] == entry[4]) {
+				//alert(entry[1]);
+				addto = 1;
+				updateKey = entry[0];
+				updateQty = entry[1];	
+			} 
+		});
+		if(addto != 0) {
+			newQty = parseInt(item[0]) + parseInt(updateQty);
+			updateItem = newQty + ";" + item[1] + ";" + item[2] + ";" + item[3] + ";" + item[4] + ";";
+			localStorage.setItem(updateKey, updateItem);
+			getAllItems();
+		} else {	
+	        try {
+	            localStorage.setItem(itemId, items);
+				getAllItems();
+	            return false;
+	        } catch (e) {
+	            if (e == QUOTA_EXCEEDED_ERR) {
+	                console.log('Quota exceeded!');
+	            }
+	        }
+		}
+		return false;	
 	});
 
 	$(".remove").live('click', function() {
@@ -167,33 +190,32 @@ $(function() {
 		removeId = removeId.split("#");
 		removeId = removeId[1];
 		localStorage.removeItem(removeId);
-		getAllItems(0);
+		getAllItems();
 		return false;
 	});
 	
 });
 
 function sortLocal() {
-
 	var i = 0;
 	var logLength = localStorage.length-1; //how many items are in the database starting with zero
 	db = [];
-
 	//now we are going to loop through each item in the database
 	for (i = 0; i <= logLength; i++) {
 		//lets setup some variables for the key and values
 		var itemKey = localStorage.key(i);
+		//console.log(itemKey);
 		//var dadate = (new Date(parseInt(itemKey))).toUTCString();
 		var values = localStorage.getItem(itemKey);
 		values = values.split(";"); //create an array of the values
 		//console.log(values);
-		var cat = values[0];
-		var name = values[1];
-		var sku = values[2];
-		var price = parseFloat(values[3]);
-		db.push([itemKey,cat,name,sku,price]);
+		var qty = values[0];
+		var cat = values[1];
+		var name = values[2];
+		var sku = values[3];
+		var price = parseFloat(values[4]);
+		db.push([itemKey,qty,cat,name,sku,price]);
 	}
-	db.sort();
 	db.sort(function(a,b) {
 	  //assuming distance is always a valid integer
 	  return parseInt(a,10) - parseInt(b,10);
@@ -211,16 +233,18 @@ function getAllItems() {
 	local.forEach(function(entry) {
 	    //console.log(entry[4]);
 		var itemKey = entry[0];
-		var cat = entry[1];
-		var name = entry[2];
-		var sku = entry[3];
-		var price = parseInt(entry[4]);
-		subtotal = subtotal + price;
+		var qty = parseInt(entry[1]);
+		var cat = entry[2];
+		var name = entry[3];
+		var sku = entry[4];
+		var price = parseInt(entry[5]);
+		sub = qty * price;
+		subtotal = subtotal + sub;
 		//console.log(subtotal);
 		//now that we have the item, lets add it as a list item
 		stockList += '<li class="dd-item" data-id="'+itemKey+'">';
 		stockList += '<a href="#'+itemKey+'" class="remove btn btn-xs btn-default">x</a> 	';
-		stockList += ''+cat+' - '+name+' - '+sku+' - $'+price;
+		stockList += ''+qty+' x '+cat+' - '+name+' - '+sku+' - $'+price;
 		stockList += '</li>';
 	});
 	subtotal = subtotal.toFixed(2);
@@ -240,9 +264,9 @@ function getAllItems() {
 	stockList += '<li>';
 	
 	//if there were no items in the database
-	// if (subtotal == 0) {
-	// 	stockList = '<li class="empty">List Currently Empty</li>';
-	// }
+	if (subtotal == 0) {
+		stockList = '<li class="empty">List Currently Empty</li>';
+	}
 	$("#shoppinglist").html(stockList); //update the ul with the list items
 }
 

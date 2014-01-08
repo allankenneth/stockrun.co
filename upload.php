@@ -1,5 +1,5 @@
 <?php
-$syspath = "/home/allankhaggett/public/inventory/files/";
+$syspath = "/home/allankhaggett/stockrun.co/05/files/";
 define("UPLOAD_DIR", $syspath);
 if (!empty($_FILES["myFile"])) {
     $myFile = $_FILES["myFile"];
