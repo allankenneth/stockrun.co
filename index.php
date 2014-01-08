@@ -207,15 +207,16 @@ function getAllItems() {
 	//console.log(foo[0][2]);
 	var stockList = ""; //the variable that will hold our html
 	var subtotal = 0;
+	// TODO update this to not use forEach, since that breaks in IE8
 	local.forEach(function(entry) {
 	    //console.log(entry[4]);
 		var itemKey = entry[0];
 		var cat = entry[1];
 		var name = entry[2];
 		var sku = entry[3];
-		var price = parseFloat(entry[4]);
-		var subtotal = subtotal + price;
-		console.log(parseInt(subtotal));
+		var price = parseInt(entry[4]);
+		subtotal = subtotal + price;
+		//console.log(subtotal);
 		//now that we have the item, lets add it as a list item
 		stockList += '<li class="dd-item" data-id="'+itemKey+'">';
 		stockList += '<a href="#'+itemKey+'" class="remove btn btn-xs btn-default">x</a> 	';
