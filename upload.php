@@ -1,6 +1,6 @@
 <?php
-$syspath = "/home/allankhaggett/stockrun.co/05/files/";
-define("UPLOAD_DIR", $syspath);
+include('config.php');
+
 if (!empty($_FILES["myFile"])) {
     $myFile = $_FILES["myFile"];
     if ($myFile["error"] !== UPLOAD_ERR_OK) {
