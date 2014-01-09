@@ -29,9 +29,11 @@
 <div id="wrap">
 <div class="top container">
 <div id="manage">
-<div class="row">
-<div class="col-4 col-lg-4">
 
+<div class="row">
+
+<div class="col-4 col-lg-4">
+	<div class="panel">
 	<form action="add.php" role="form">
 		<div class="form-group">
 
@@ -56,6 +58,7 @@
 		</div>
 	</form>
 </div>
+</div>
 <div class="col-4 col-lg-4">
 	<p><a class="btn btn-primary" href="files/skulist.csv">Download CSV</a></p>
 	<hr>
@@ -67,6 +70,7 @@
 	</form>
 </div>
 </div> <!--/.row -->
+
 </div> <!--/#manage-->
 <div class="row">
 <div class="col-12 col-lg-12">
@@ -103,16 +107,20 @@ while (($line = fgetcsv($f)) !== false) {
         $count = 0; //reset to 0 for each inner loop
 		$items = '1;';
         foreach ($line as $cell) {
-                echo "<div class=\"col-md-2 col-lg-2 ".$labels[$count]."\">";
-				if($count==3) echo '$';
 				$itembit = htmlspecialchars($cell);
 				$items .= $itembit.";";
+				
+                echo "<div class=\"col-md-2 col-lg-2 ".$labels[$count]."\"";
+				if ($count==2) echo " id=\"".$cell."\"";
+				echo ">";
+				if($count==3) echo '$';
+
 				echo $itembit;
 				echo "</div>\n";
                 $count++; //go up one each loop
         }
 		echo "<div class=\"col-md-2 col-lg-2\">";
-		echo " <a class=\"addtolist btn btn-xs btn-default\" data-item=\"".$items."\" href=\"#\">+</a>";
+		echo " <a class=\"addtolist btn btn-xs btn-default\" data-item=\"".$items."\" href=\"#\">+</a><span></span>";
 		echo "</div>\n";
         echo "</div></div>\n";
         echo "</li>\n";
@@ -149,9 +157,6 @@ $(function() {
 	};
 	var contactList = new List('stock', options);
 	
-	
-	
-	
 	$('.showman').click(function(){
 		$('#manage').slideToggle();
 		return false;
@@ -181,17 +186,19 @@ $(function() {
 			newQty = parseInt(item[0]) + parseInt(updateQty);
 			updateItem = newQty + ";" + item[1] + ";" + item[2] + ";" + item[3] + ";" + item[4] + ";";
 			localStorage.setItem(updateKey, updateItem);
+			$(this).next("span").html(newQty);
 			getAllItems();
 		} else {	
-	        try {
-	            localStorage.setItem(itemId, items);
+			try {
+				localStorage.setItem(itemId, items);
+				$(this).next("span").html(1);
 				getAllItems();
-	            return false;
-	        } catch (e) {
-	            if (e == QUOTA_EXCEEDED_ERR) {
-	                console.log('Quota exceeded!');
-	            }
-	        }
+				return false;
+			} catch (e) {
+				if (e == QUOTA_EXCEEDED_ERR) {
+					console.log('Quota exceeded!');
+				}
+			}
 		}
 		return false;	
 	});
@@ -268,10 +275,10 @@ function getAllItems() {
 	stockList += '<li>Total: $'+totalorder+'</li>';
 	basket = stockList.replace(/(<([^>]+)>)/ig,"");
 	stockList += '<li>';
-	stockList += '<form action="send.php">';
-	stockList += '<input type="text" size="20" name="sendto">';
-	stockList += '<button class="send btn btn-sm btn-success" href="send.php">Email Basket</button>';
-	stockList += '</form>';
+	// stockList += '<form action="send.php">';
+	// stockList += '<input type="text" size="20" name="sendto">';
+	// stockList += '<button class="send btn btn-sm btn-success" href="send.php">Email Basket</button>';
+	// stockList += '</form>';
 	stockList += '<li>';
 	
 	//if there were no items in the database
