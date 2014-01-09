@@ -12,11 +12,25 @@
 	<script src="js/respond.js"></script>
 </head>
 <body>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <span class="navbar-brand">Store 5</span>
+        </div>
+
+		<div class="navbar-form navbar-right">
+			<a class="btn btn-primary refresh" href="#" title="Refresh the page">&#8635;</a>
+			<a class="btn btn-primary showman" href="#manage" title="Download and upload new lists">&#9776;</a>
+		</div>
+      </div>
+    </div>
+	
 <div id="wrap">
 <div class="top container">
 <div id="manage">
 <div class="row">
 <div class="col-4 col-lg-4">
+
 	<form action="add.php" role="form">
 		<div class="form-group">
 
@@ -63,10 +77,7 @@
 <div class="row">
 	<div class="col-12 col-lg-12">
 	<div id="stock">
-	<div class="buttons">
-		<a class="btn btn-primary btn-lg refresh" href="#" title="Refresh the page">&#8635;</a>
-		<a class="btn btn-primary btn-lg showman" href="#manage" title="Download and upload new lists">&#9776;</a>
-	</div>
+
 	<form role="form">
 	  <div class="form-group">
 		  <input type="input" class="search" placeholder="Search">

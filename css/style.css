@@ -1,3 +1,6 @@
+body {
+	padding-top: 60px;
+}
 .top {
 	margin-top: 15px;
 }
@@ -49,7 +52,7 @@ input {
 .up {
 
 }
-.buttons {float:right;}
+.buttons {/*float:right;*/}
 .showman,
 .refresh {
 }
