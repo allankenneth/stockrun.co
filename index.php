@@ -14,14 +14,15 @@
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container">
+  		<div class="buttons">
+  			<a class="btn btn-primary refresh" href="#" title="Refresh the page">&#8635;</a>
+  			<a class="btn btn-primary showman" href="#manage" title="Download and upload new lists">&#9776;</a>
+  		</div>
         <div class="navbar-header">
           <span class="navbar-brand">Store 5</span>
         </div>
 
-		<div class="navbar-form navbar-right">
-			<a class="btn btn-primary refresh" href="#" title="Refresh the page">&#8635;</a>
-			<a class="btn btn-primary showman" href="#manage" title="Download and upload new lists">&#9776;</a>
-		</div>
+
       </div>
     </div>
 	
