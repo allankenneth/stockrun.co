@@ -1,4 +1,4 @@
 <?php
 
-$syspath = "/home/allankhaggett/stockrun.co/05/files/";
+$syspath = "/path/to/your/files/directory/";
 define("UPLOAD_DIR", $syspath);
