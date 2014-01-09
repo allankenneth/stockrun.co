@@ -1,5 +1,7 @@
 <?php
+
 include('config.php');
+define("UPLOAD_DIR", $syspath);
 
 if (!empty($_FILES["myFile"])) {
     $myFile = $_FILES["myFile"];
