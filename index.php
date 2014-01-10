@@ -120,7 +120,9 @@ while (($line = fgetcsv($f)) !== false) {
                 $count++; //go up one each loop
         }
 		echo "<div class=\"col-md-2 col-lg-2\">";
-		echo " <a class=\"addtolist btn btn-xs btn-default\" data-item=\"".$items."\" href=\"#\">+</a><span></span>";
+		echo " <a class=\"addtolist btn btn-xs btn-default\" id=\"minus\" data-item=\"".$items."\" href=\"#\">-</a>";
+		echo " <span></span>";
+		echo "<a class=\"addtolist btn btn-xs btn-default\" id=\"plus\" data-item=\"".$items."\" href=\"#\">+</a>";
 		echo "</div>\n";
         echo "</div></div>\n";
         echo "</li>\n";
@@ -164,42 +166,46 @@ $(function() {
 	$(".search").focus();
 	
 	$(".addtolist").click(function(){
-    	var newDate = new Date();
-        var itemId = newDate.getTime();
+		var action = $(this).attr("id");
 		var items = $(this).attr("data-item");
 		item = items.split(";");
 		sku = item[3];
 		// Check that the item doesn't already exist
-		var local = sortLocal();
 		var addto = 0;
 		var updateKey = 0;
 		var updateQty = 0;
+		var local = sortLocal();
 		local.forEach(function(entry) {		
 			if (item[3] == entry[4]) {
-				//alert(entry[1]);
 				addto = 1;
 				updateKey = entry[0];
 				updateQty = entry[1];	
 			} 
 		});
-		if(addto != 0) {
+		if(action == "plus") {
 			newQty = parseInt(item[0]) + parseInt(updateQty);
+			$(this).prev("span").html(newQty);
+		} else {
+			newQty = parseInt(updateQty) - parseInt(item[0]);
+			$(this).next("span").html(newQty);
+		}
+		if(addto != 0) {
 			updateItem = newQty + ";" + item[1] + ";" + item[2] + ";" + item[3] + ";" + item[4] + ";";
 			localStorage.setItem(updateKey, updateItem);
-			$(this).next("span").html(newQty);
-			getAllItems();
+			
 		} else {	
 			try {
+		    	var newDate = new Date();
+		        var itemId = newDate.getTime();
 				localStorage.setItem(itemId, items);
-				$(this).next("span").html(1);
-				getAllItems();
-				return false;
+
 			} catch (e) {
 				if (e == QUOTA_EXCEEDED_ERR) {
 					console.log('Quota exceeded!');
 				}
 			}
 		}
+		getAllItems();
 		return false;	
 	});
 
@@ -266,7 +272,8 @@ function getAllItems() {
 		stockList += '</li>';
 	});
 	subtotal = subtotal.toFixed(2);
-	var tax = (subtotal * .12).toFixed(2);
+	var taxrate = .12;
+	var tax = (subtotal * taxrate).toFixed(2);
 	var totalorder = parseFloat(subtotal) + parseFloat(tax);
 	totalorder = totalorder.toFixed(2);
 	stockList += '<hr>';
