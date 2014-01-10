@@ -15,8 +15,9 @@
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container">
   		<div class="buttons">
+  			<a class="btn btn-primary basket" href="#basket" title="Basket">&#9776; <span>0</span></a>
   			<a class="btn btn-primary refresh" href="#" title="Refresh the page">&#8635;</a>
-  			<a class="btn btn-primary showman" href="#manage" title="Download and upload new lists">&#9776;</a>
+  			<a class="btn btn-primary showman" href="#manage" title="Download and upload new lists">&#9881;</a>
   		</div>
         <div class="navbar-header">
           <span class="navbar-brand">Store 5</span>
@@ -74,7 +75,7 @@
 </div> <!--/#manage-->
 <div class="row">
 <div class="col-12 col-lg-12">
-	<ul id="shoppinglist">
+	<ul id="basket">
 	</ul>
 </div>
 </div>
@@ -120,9 +121,9 @@ while (($line = fgetcsv($f)) !== false) {
                 $count++; //go up one each loop
         }
 		echo "<div class=\"col-md-2 col-lg-2\">";
-		echo " <a class=\"addtolist btn btn-xs btn-default\" id=\"minus\" data-item=\"".$items."\" href=\"#\">-</a>";
-		echo " <span></span>";
-		echo "<a class=\"addtolist btn btn-xs btn-default\" id=\"plus\" data-item=\"".$items."\" href=\"#\">+</a>";
+		echo " <a class=\"addtolist btn btn-default\" id=\"minus\" data-item=\"".$items."\" href=\"#\">-</a>";
+		echo " <span>0</span>";
+		echo "<a class=\"addtolist btn btn-default\" id=\"plus\" data-item=\"".$items."\" href=\"#\">+</a>";
 		echo "</div>\n";
         echo "</div></div>\n";
         echo "</li>\n";
@@ -163,6 +164,10 @@ $(function() {
 		$('#manage').slideToggle();
 		return false;
 	});
+	$('.basket').click(function(){
+		$('#basket').slideToggle();
+		return false;
+	});
 	$(".search").focus();
 	
 	$(".addtolist").click(function(){
@@ -175,6 +180,9 @@ $(function() {
 		var updateKey = 0;
 		var updateQty = 0;
 		var local = sortLocal();
+		var totalQty = local.length;
+		$(".basket span").html(totalQty);
+		//console.log(totalQty);
 		local.forEach(function(entry) {		
 			if (item[3] == entry[4]) {
 				addto = 1;
@@ -291,7 +299,7 @@ function getAllItems() {
 	if (subtotal == 0) {
 		stockList = '<li class="empty">List Currently Empty</li>';
 	}
-	$("#shoppinglist").html(stockList); //update the ul with the list items
+	$("#basket").html(stockList); //update the ul with the list items
 }
 
 
