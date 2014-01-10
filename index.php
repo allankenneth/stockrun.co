@@ -190,19 +190,18 @@ $(function() {
 			$(this).next("span").html(newQty);
 		}
 		if(addto != 0) {
-			updateItem = newQty + ";" + item[1] + ";" + item[2] + ";" + item[3] + ";" + item[4] + ";";
-			localStorage.setItem(updateKey, updateItem);
-			
-		} else {	
-			try {
-		    	var newDate = new Date();
-		        var itemId = newDate.getTime();
-				localStorage.setItem(itemId, items);
-
-			} catch (e) {
-				if (e == QUOTA_EXCEEDED_ERR) {
-					console.log('Quota exceeded!');
-				}
+			var key = updateKey;
+			var newItems = newQty + ";" + item[1] + ";" + item[2] + ";" + item[3] + ";" + item[4] + ";";
+		} else {
+	    	var newDate = new Date();
+	        var key = newDate.getTime();	
+			var newItems = items;
+		}
+		try {
+			localStorage.setItem(key, newItems);
+		} catch(e) {
+			if (e == QUOTA_EXCEEDED_ERR) {
+				console.log('Quota exceeded!');
 			}
 		}
 		getAllItems();
