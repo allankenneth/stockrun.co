@@ -110,9 +110,9 @@ while (($line = fgetcsv($f)) !== false) {
         foreach ($line as $cell) {
 				$itembit = htmlspecialchars($cell);
 				$items .= $itembit.";";
-				
+				$skuid = 0;
                 echo "<div class=\"col-md-2 col-lg-2 ".$labels[$count]."\"";
-				if ($count==2) echo " id=\"".$cell."\"";
+				if ($count==2) echo " id=\"".htmlspecialchars($$cell)."\"";
 				echo ">";
 				if($count==3) echo '$';
 
@@ -122,7 +122,7 @@ while (($line = fgetcsv($f)) !== false) {
         }
 		echo "<div class=\"col-md-2 col-lg-2\">";
 		echo " <a class=\"addtolist btn btn-default\" id=\"minus\" data-item=\"".$items."\" href=\"#\">-</a>";
-		echo " <span>0</span>";
+		echo " <span class="qty">0</span>";
 		echo "<a class=\"addtolist btn btn-default\" id=\"plus\" data-item=\"".$items."\" href=\"#\">+</a>";
 		echo "</div>\n";
         echo "</div></div>\n";
@@ -180,8 +180,6 @@ $(function() {
 		var updateKey = 0;
 		var updateQty = 0;
 		var local = sortLocal();
-		var totalQty = local.length;
-		$(".basket span").html(totalQty);
 		//console.log(totalQty);
 		local.forEach(function(entry) {		
 			if (item[3] == entry[4]) {
@@ -254,12 +252,37 @@ function sortLocal() {
 	return db;
 	
 }
+function applyQts() {
+	var i = 0;
+	var logLength = localStorage.length-1; //how many items are in the database starting with zero
+	uppers = [];
+	//now we are going to loop through each item in the database
+	for (i = 0; i <= logLength; i++) {
+		//lets setup some variables for the key and values
+		var itemKey = localStorage.key(i);
+		//console.log(itemKey);
+		//var dadate = (new Date(parseInt(itemKey))).toUTCString();
+		var values = localStorage.getItem(itemKey);
+		values = values.split(";"); //create an array of the values
+		//console.log(values);
+		var qty = values[0];
+		var sku = values[3];
+		uppers.push([qty,sku]);
+	}
+	uppers.forEach(function(entry) {
+		skuid = "#"+entry[1];
+		//$(skuid).
+	});
+	return uppers;
+	
+}
 
 function getAllItems() {
 	var local = sortLocal();
 	//console.log(foo[0][2]);
 	var stockList = ""; //the variable that will hold our html
 	var subtotal = 0;
+	var totalQty = 0;
 	// TODO update this to not use forEach, since that breaks in IE8
 	local.forEach(function(entry) {
 	    //console.log(entry[4]);
@@ -277,6 +300,7 @@ function getAllItems() {
 		stockList += '<a href="#'+itemKey+'" class="remove btn btn-xs btn-default">x</a> 	';
 		stockList += ''+qty+' x '+cat+' - '+name+' - '+sku+' - $'+price;
 		stockList += '</li>';
+		totalQty = totalQty + qty;
 	});
 	subtotal = subtotal.toFixed(2);
 	var taxrate = .12;
@@ -299,6 +323,8 @@ function getAllItems() {
 	if (subtotal == 0) {
 		stockList = '<li class="empty">List Currently Empty</li>';
 	}
+	//var totalQty = local.length;
+	$(".basket span").html(totalQty);
 	$("#basket").html(stockList); //update the ul with the list items
 }
 
