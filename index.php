@@ -15,12 +15,11 @@
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container">
   		<div class="buttons">
-  			<a class="btn btn-primary basket" href="#basket" title="Basket">&#9776; <span>0</span></a>
   			<a class="btn btn-primary refresh" href="#" title="Refresh the page">&#8635;</a>
   			<a class="btn btn-primary showman" href="#manage" title="Download and upload new lists">&#9881;</a>
   		</div>
         <div class="navbar-header">
-          <span class="navbar-brand">Store 5</span>
+			<a class="btn btn-success basket" href="#basket" title="Basket">&#9776; <span>0</span></a>
         </div>
 
 
@@ -120,7 +119,7 @@ while (($line = fgetcsv($f)) !== false) {
         }
 		echo "<div id=\"".$skuId."\" class=\"col-md-2 col-lg-2\">";
 		echo " <a class=\"addtolist btn btn-default\" id=\"minus\" data-item=\"".$items."\" href=\"#\">-</a>";
-		echo " <span class=\"qty\">0</span>";
+		echo " <span class=\"qty btn btn-default\">0</span> ";
 		echo "<a class=\"addtolist btn btn-default\" id=\"plus\" data-item=\"".$items."\" href=\"#\">+</a>";
 		echo "</div>\n";
         echo "</div></div>\n";
@@ -145,7 +144,7 @@ $(function() {
         alert('Your browser does not support HTML5 localStorage. Try upgrading.');
     } else {
         getAllItems(); //load the items
-		applyQts();
+		applyQtys();
 		// foo = sortLocal();
 		// console.log(foo[0][2]);
 	}
@@ -164,9 +163,20 @@ $(function() {
 		$('#manage').slideToggle();
 		return false;
 	});
-	$('.basket').click(function(){
+
+
+
+	$('.basket').click(function(e){
 		$('#basket').slideToggle();
-		return false;
+		//window.location.href = "#basket";
+		var target = "#basket";
+		// var targetOffset = $(target).offset().top - 60;
+		// $("#basket").animate({scrollTop: targetOffset}, 400, function(event) {
+		// 	event.preventDefault();
+		e.preventDefault();
+		location.hash = target;
+		// });
+
 	});
 	$(".search").focus();
 	
@@ -252,8 +262,8 @@ function sortLocal() {
 	return db;
 	
 }
-// TODO refactor this to integrate this and the above functions
-function applyQts() {
+// TODO refactor this to integrate it and the above functions
+function applyQtys() {
 	var i = 0;
 	var logLength = localStorage.length-1; //how many items are in the database starting with zero
 	uppers = [];
@@ -313,12 +323,12 @@ function getAllItems() {
 	stockList += '<li>Tax: $'+tax+'</li>';
 	stockList += '<li>Total: $'+totalorder+'</li>';
 	basket = stockList.replace(/(<([^>]+)>)/ig,"");
-	stockList += '<li>';
+	//stockList += '<li>';
 	// stockList += '<form action="send.php">';
 	// stockList += '<input type="text" size="20" name="sendto">';
 	// stockList += '<button class="send btn btn-sm btn-success" href="send.php">Email Basket</button>';
 	// stockList += '</form>';
-	stockList += '<li>';
+	//stockList += '</li>';
 	
 	//if there were no items in the database
 	if (subtotal == 0) {
