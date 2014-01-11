@@ -107,22 +107,20 @@ while (($line = fgetcsv($f)) !== false) {
 		echo "<div class=\"col-12 col-xs-12\">\n";
         $count = 0; //reset to 0 for each inner loop
 		$items = '1;';
+		$skuId = '';
         foreach ($line as $cell) {
 				$itembit = htmlspecialchars($cell);
 				$items .= $itembit.";";
-				$skuid = 0;
-                echo "<div class=\"col-md-2 col-lg-2 ".$labels[$count]."\"";
-				if ($count==2) echo " id=\"".htmlspecialchars($$cell)."\"";
-				echo ">";
+                echo "<div class=\"col-md-2 col-lg-2 ".$labels[$count]."\">";
+				if ($count==2) $skuId = htmlspecialchars($cell);
 				if($count==3) echo '$';
-
 				echo $itembit;
 				echo "</div>\n";
                 $count++; //go up one each loop
         }
-		echo "<div class=\"col-md-2 col-lg-2\">";
+		echo "<div id=\"".$skuId."\" class=\"col-md-2 col-lg-2\">";
 		echo " <a class=\"addtolist btn btn-default\" id=\"minus\" data-item=\"".$items."\" href=\"#\">-</a>";
-		echo " <span class="qty">0</span>";
+		echo " <span class=\"qty\">0</span>";
 		echo "<a class=\"addtolist btn btn-default\" id=\"plus\" data-item=\"".$items."\" href=\"#\">+</a>";
 		echo "</div>\n";
         echo "</div></div>\n";
@@ -147,9 +145,11 @@ $(function() {
         alert('Your browser does not support HTML5 localStorage. Try upgrading.');
     } else {
         getAllItems(); //load the items
+		applyQts();
 		// foo = sortLocal();
 		// console.log(foo[0][2]);
 	}
+	
 
 	$('.refresh').click(function() {
 	    location.reload();
@@ -252,6 +252,7 @@ function sortLocal() {
 	return db;
 	
 }
+// TODO refactor this to integrate this and the above functions
 function applyQts() {
 	var i = 0;
 	var logLength = localStorage.length-1; //how many items are in the database starting with zero
@@ -270,8 +271,8 @@ function applyQts() {
 		uppers.push([qty,sku]);
 	}
 	uppers.forEach(function(entry) {
-		skuid = "#"+entry[1];
-		//$(skuid).
+		var skuid = '#'+entry[1]+' .qty';
+		$(skuid).html(entry[0])
 	});
 	return uppers;
 	
