@@ -240,7 +240,7 @@ $(function() {
 	
 	
 	$("#sendbasket").submit(function(e){
-		e.preventDefault();
+		
 		var emailTo = $("#sendto").val();
 		alert(emailTo);
 		data = sendBasket(emailTo);
@@ -253,7 +253,7 @@ $(function() {
 		        //$('.success').fadeIn(1000);
 		    }
 		});
-		
+		e.preventDefault();
 	});
 	
 });
@@ -285,7 +285,7 @@ function sortLocal() {
 	return db;
 	
 }
-// TODO refactor this to integrate it and the above functions
+// TODO refactor this to integrate it and the above function
 function applyQtys() {
 	var i = 0;
 	var logLength = localStorage.length-1; //how many items are in the database starting with zero
