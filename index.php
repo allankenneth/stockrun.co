@@ -238,6 +238,24 @@ $(function() {
 		return false;
 	});
 	
+	
+	$("#sendbasket").submit(function(e){
+		e.preventDefault();
+		var emailTo = $("#sendto").val();
+		alert(emailTo);
+		data = sendBasket(emailTo);
+		$.ajax({
+		    type: "POST",
+		    url: "send.php",
+		    data: data,
+		    success: function(){
+				console.log("Basket sent!");
+		        //$('.success').fadeIn(1000);
+		    }
+		});
+		
+	});
+	
 });
 
 function sortLocal() {
@@ -328,12 +346,12 @@ function getAllItems() {
 	stockList += '<li>Tax: $'+tax+'</li>';
 	stockList += '<li>Total: $'+totalorder+'</li>';
 	basket = stockList.replace(/(<([^>]+)>)/ig,"");
-	//stockList += '<li>';
-	// stockList += '<form action="send.php">';
-	// stockList += '<input type="text" size="20" name="sendto">';
-	// stockList += '<button class="send btn btn-sm btn-success" href="send.php">Email Basket</button>';
-	// stockList += '</form>';
-	//stockList += '</li>';
+	stockList += '<li>';
+	stockList += '<form method="post" id="sendbasket" action="send.php">';
+	stockList += '<input type="text" size="20" id="sendto" name="sendto">';
+	stockList += '<button class="btn btn-sm btn-success" href="send.php">Send Basket</button>';
+	stockList += '</form>';
+	stockList += '</li>';
 	
 	//if there were no items in the database
 	if (subtotal == 0) {
@@ -344,7 +362,52 @@ function getAllItems() {
 	$("#basket").html(stockList); //update the ul with the list items
 }
 
-
+function sendBasket(sendto) {
+	var local = sortLocal();
+	//if there were no items in the database
+	if (localStorage.length-1 == 0) {
+		message = 'List Currently Empty';
+	} else {
+		//console.log(foo[0][2]);
+		var message = ""; //the variable that will hold our html
+		var subtotal = 0;
+		var totalQty = 0;
+		// TODO update this to not use forEach, since that breaks in IE8
+		local.forEach(function(entry) {
+		    //console.log(entry[4]);
+			var itemKey = entry[0];
+			var qty = parseInt(entry[1]);
+			var cat = entry[2];
+			var name = entry[3];
+			var sku = entry[4];
+			var price = parseInt(entry[5]);
+			sub = qty * price;
+			subtotal = subtotal + sub;
+			//console.log(subtotal);
+			//now that we have the item, lets add it as a list item
+			//stockList += '<li class="dd-item" data-id="'+itemKey+'">';
+			//stockList += '<a href="#'+itemKey+'" class="remove btn btn-xs btn-default">x</a> 	';
+			message += ''+qty+' x '+cat+' - '+name+' - '+sku+' - $'+price+'<br>';
+			totalQty = totalQty + qty;
+		});
+		subtotal = subtotal.toFixed(2);
+		var taxrate = .12;
+		var tax = (subtotal * taxrate).toFixed(2);
+		var totalorder = parseFloat(subtotal) + parseFloat(tax);
+		totalorder = totalorder.toFixed(2);
+		message += '<hr>';
+		message += 'Subtotal: $'+subtotal+'<br>';
+		message += 'Tax: $'+tax+'<br>';
+		message += 'Total: $'+totalorder+'<br>';
+		//basket = message.replace(/(<([^>]+)>)/ig,"");
+	}
+	var data = {
+		to: sendto,
+	    basket: message
+	};
+	return data;
+	
+}
 </script>
 </body>
 </html>
