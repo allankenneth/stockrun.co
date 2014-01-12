@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>StockRun.co - Store 5</title>
+	<title>Store 5</title>
 	<link rel="apple-touch-icon" sizes="120x120" href="rabbit.png">
 	<meta name="viewport" content="width=device-width">
 	<meta name="mobile-web-app-capable" content="yes">
@@ -10,8 +10,7 @@
 	<link rel="stylesheet" href="css/bootstrap.css">
 	<link rel="stylesheet" href="css/style.css">
 	<script src="js/respond.js"></script>
-	<script src="js/jquery-1.4.2.min.js"></script>
-	<script src="js/jquery.scrollTo.js	"></script>
+
 </head>
 <body id="body">
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -39,19 +38,19 @@
 	<form action="add.php" role="form">
 		<div class="form-group">
 
-			<div>
+			<div class="form-group">
 				<label for="category">Category:</label> <br>
-				<input type="text" name="category" id="cat">
+				<input type="text" name="category" id="category">
 			</div>
-			<div>
+			<div class="form-group">
 				<label for="sku">SKU:</label><br>
 				<input type="text" name="sku" id="sku">
 			</div>
-			<div>
+			<div class="form-group">
 				<label for="name">Name:</label> <br>
 				<input type="text" name="name" id="name">
 			</div>
-			<div>
+			<div class="form-group">
 				<label for="price">Price:</label> <br>
 				<input type="text" name="price" id="price"></label>
 			</div>
@@ -136,27 +135,23 @@ fclose($f);
 </div>
 </div>
 <!-- <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script> -->
-<!-- <script src="js/jquery-1.4.2.min.js"></script> -->
+<script src="js/jquery-1.4.2.min.js"></script>
 <!-- <script src="../../dist/js/bootstrap.min.js"></script> -->
 <script src="js/list.min.js"></script>
-<!-- <script src="js/scrollto.min.js"></script> -->
+<script src="js/jquery.scrollTo.js	"></script>
 <script>
 $(function() {
 	
     if (typeof(localStorage) == 'undefined' ) {
         alert('Your browser does not support HTML5 localStorage. Try upgrading.');
     } else {
-        getAllItems(); //load the items
+        getAllItems();
 		applyQtys();
-		// foo = sortLocal();
-		// console.log(foo[0][2]);
 	}
-	
-
+	$(".search").focus();
 	$('.refresh').click(function() {
 	    location.reload();
 	});
-	
 	var options = {
 		valueNames: [ 'category', 'name', 'sku', 'price' ]
 	};
@@ -166,8 +161,6 @@ $(function() {
 		$('#manage').slideToggle();
 		return false;
 	});
-
-
 
 	$('.basket').click(function(e){
 		$('#basket').slideToggle();
@@ -183,9 +176,9 @@ $(function() {
 		// });
 
 	});
-	$(".search").focus();
 	
 	$(".addtolist").click(function(){
+		
 		var action = $(this).attr("id");
 		var items = $(this).attr("data-item");
 		item = items.split(";");
@@ -230,6 +223,7 @@ $(function() {
 	});
 
 	$(".remove").live('click', function() {
+		
 		var removeId = $(this).attr("href");
 		removeId = removeId.split("#");
 		removeId = removeId[1];
@@ -238,18 +232,17 @@ $(function() {
 		return false;
 	});
 	
-	
-	$("#sendbasket").submit(function(e){
+	$("#sendbasket").live("submit",function(e){
 		
 		var emailTo = $("#sendto").val();
-		alert(emailTo);
+		//alert(emailTo);
 		data = sendBasket(emailTo);
 		$.ajax({
 		    type: "POST",
 		    url: "send.php",
 		    data: data,
 		    success: function(){
-				console.log("Basket sent!");
+				alert("Basket sent!");
 		        //$('.success').fadeIn(1000);
 		    }
 		});
@@ -259,6 +252,7 @@ $(function() {
 });
 
 function sortLocal() {
+	
 	var i = 0;
 	var logLength = localStorage.length-1; //how many items are in the database starting with zero
 	db = [];
@@ -307,8 +301,7 @@ function applyQtys() {
 		var skuid = '#'+entry[1]+' .qty';
 		$(skuid).html(entry[0])
 	});
-	return uppers;
-	
+	return uppers;	
 }
 
 function getAllItems() {
@@ -345,7 +338,6 @@ function getAllItems() {
 	stockList += '<li>Subtotal: $'+subtotal+'</li>';
 	stockList += '<li>Tax: $'+tax+'</li>';
 	stockList += '<li>Total: $'+totalorder+'</li>';
-	basket = stockList.replace(/(<([^>]+)>)/ig,"");
 	stockList += '<li>';
 	stockList += '<form method="post" id="sendbasket" action="send.php">';
 	stockList += '<input type="text" size="20" id="sendto" name="sendto">';
@@ -365,11 +357,11 @@ function getAllItems() {
 function sendBasket(sendto) {
 	var local = sortLocal();
 	//if there were no items in the database
-	if (localStorage.length-1 == 0) {
-		message = 'List Currently Empty';
-	} else {
+	// if (local.length-1 == 0) {
+	// 	message = 'List Currently Empty';
+	// } else {
 		//console.log(foo[0][2]);
-		var message = ""; //the variable that will hold our html
+		var message = '<style>* {font-size: 22px}</style>'; //the variable that will hold our html
 		var subtotal = 0;
 		var totalQty = 0;
 		// TODO update this to not use forEach, since that breaks in IE8
@@ -400,7 +392,7 @@ function sendBasket(sendto) {
 		message += 'Tax: $'+tax+'<br>';
 		message += 'Total: $'+totalorder+'<br>';
 		//basket = message.replace(/(<([^>]+)>)/ig,"");
-	}
+//	}
 	var data = {
 		to: sendto,
 	    basket: message
