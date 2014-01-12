@@ -10,8 +10,10 @@
 	<link rel="stylesheet" href="css/bootstrap.css">
 	<link rel="stylesheet" href="css/style.css">
 	<script src="js/respond.js"></script>
+	<script src="js/jquery-1.4.2.min.js"></script>
+	<script src="js/jquery.scrollTo.js	"></script>
 </head>
-<body>
+<body id="body">
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container">
   		<div class="buttons">
@@ -119,7 +121,7 @@ while (($line = fgetcsv($f)) !== false) {
         }
 		echo "<div id=\"".$skuId."\" class=\"col-md-2 col-lg-2\">";
 		echo " <a class=\"addtolist btn btn-default\" id=\"minus\" data-item=\"".$items."\" href=\"#\">-</a>";
-		echo " <span class=\"qty btn btn-default\">0</span> ";
+		echo "<span class=\"qty btn btn-default\">0</span>";
 		echo "<a class=\"addtolist btn btn-default\" id=\"plus\" data-item=\"".$items."\" href=\"#\">+</a>";
 		echo "</div>\n";
         echo "</div></div>\n";
@@ -134,9 +136,10 @@ fclose($f);
 </div>
 </div>
 <!-- <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script> -->
-<script src="js/jquery-1.4.2.min.js"></script>
+<!-- <script src="js/jquery-1.4.2.min.js"></script> -->
 <!-- <script src="../../dist/js/bootstrap.min.js"></script> -->
 <script src="js/list.min.js"></script>
+<!-- <script src="js/scrollto.min.js"></script> -->
 <script>
 $(function() {
 	
@@ -174,7 +177,9 @@ $(function() {
 		// $("#basket").animate({scrollTop: targetOffset}, 400, function(event) {
 		// 	event.preventDefault();
 		e.preventDefault();
-		location.hash = target;
+		//location.hash = target;
+		//console.log(target);
+		$(target).scrollTo(300);
 		// });
 
 	});
