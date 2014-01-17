@@ -1,9 +1,31 @@
+<?php
+function getColleagues() {
+	$f = fopen("files/colleagues.csv", "r");
+	$colleagues = '';
+	while (($line = fgetcsv($f)) !== false) {
+        $count = 0;
+        foreach ($line as $cell) {
+				$itembit = htmlspecialchars($cell);
+				if($count == 0) $colleagueId = $itembit;
+				if($count == 1) $name = $itembit;
+				if($count == 2) $title = $itembit;
+				if($count == 3) $colleagueEmail = $itembit;
+                $count++; //go up one each loop
+        }
+		$colleagues .= '<input type="radio" id="colleagueId'.$colleagueId.'" name="colleagueId" value="'.$colleagueId.'"> ';
+		$colleagues .= '<label for="colleagueId'.$colleagueId.'">'.$name.'</label> ';
+		// .'-'.$title.'-'.$colleagueEmail.'
+	}
+	print $colleagues;
+	fclose($f);
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<title>Store 5</title>
 	<link rel="apple-touch-icon" sizes="120x120" href="rabbit.png">
-	<meta name="viewport" content="width=device-width">
+	<meta name="viewport" content="width=device-width, user-scalable=no">
 	<meta name="mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -21,9 +43,7 @@
   		</div>
         <div class="navbar-header">
 			<a class="btn btn-success basket" href="#basket" title="Basket">&#9776; <span>0</span></a>
-        </div>
-
-
+		</div>
       </div>
     </div>
 	
@@ -340,6 +360,9 @@ function getAllItems() {
 	stockList += '<li>Total: $'+totalorder+'</li>';
 	stockList += '<li>';
 	stockList += '<form method="post" id="sendbasket" action="send.php">';
+	stockList += '<div>';
+	stockList += '<?php getColleagues() ?>';
+	stockList += '</div>';	
 	stockList += '<input type="text" size="20" id="sendto" name="sendto">';
 	stockList += '<button class="btn btn-sm btn-success" href="send.php">Send Basket</button>';
 	stockList += '</form>';
