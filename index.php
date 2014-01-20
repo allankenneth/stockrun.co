@@ -1,4 +1,46 @@
 <?php
+function getStockList() {
+	// TODO make this account for " in item names! Dumbass.
+	$labels = Array("category", "name", "sku", "price");
+	$f = fopen("files/skulist.csv", "r");
+	echo "<ul class='list'>\n";
+	$itemcount = 0;
+	while (($line = fgetcsv($f)) !== false) {
+		// skip the first line so we don't see the column headers
+		if($itemcount > 0) {
+			$liclass='';
+			if ($itemcount % 2 == 0) { 
+				$liclass='alt '; 
+			} 
+	        echo "<li>\n";
+	        echo "<div class=\"".$liclass."row\">\n";
+			echo "<div class=\"col-12 col-xs-12\">\n";
+	        $count = 0; //reset to 0 for each inner loop
+			$items = '1;';
+			$skuId = '';
+	        foreach ($line as $cell) {
+					$itembit = htmlspecialchars($cell);
+					$items .= $itembit.";";
+	                echo "<div class=\"col-md-2 col-lg-2 ".$labels[$count]."\">";
+					if ($count==2) $skuId = htmlspecialchars($cell);
+					if($count==3) echo '$';
+					echo $itembit;
+					echo "</div>\n";
+	                $count++; //go up one each loop
+	        }
+			echo "<div id=\"".$skuId."\" class=\"col-md-2 col-lg-2\">";
+			echo " <a class=\"addtolist btn btn-default\" id=\"minus\" data-item=\"".$items."\" href=\"#\">-</a>";
+			echo "<span class=\"qty btn btn-default\">0</span>";
+			echo "<a class=\"addtolist btn btn-default\" id=\"plus\" data-item=\"".$items."\" href=\"#\">+</a>";
+			echo "</div>\n";
+	        echo "</div></div>\n";
+	        echo "</li>\n";
+		}
+		$itemcount++;
+	}
+	echo "\n\t</ul>\n";
+	fclose($f);
+}
 function getColleagues() {
 	$f = fopen("files/colleagues.csv", "r");
 	$colleagues = '';
@@ -12,7 +54,9 @@ function getColleagues() {
 				if($count == 3) $colleagueEmail = $itembit;
                 $count++; //go up one each loop
         }
-		$colleagues .= '<input type="radio" id="colleagueId'.$colleagueId.'" name="colleagueId" value="'.$colleagueId.'"> ';
+		$colleagues .= '<input type="radio" id="colleagueId'.$colleagueId.'"';
+		$colleagues .= ' value="'.$name.'-'.$title.'-'.$colleagueEmail.'"';
+		$colleagues .= ' name="colleagueId"> '; // value="'.$colleagueId.'"
 		$colleagues .= '<label for="colleagueId'.$colleagueId.'">'.$name.'</label> ';
 		// .'-'.$title.'-'.$colleagueEmail.'
 	}
@@ -109,48 +153,7 @@ function getColleagues() {
 		  <input type="input" class="search" placeholder="Search">
 	  </div>
   </form>
-<?php
-// TODO make this account for " in item names! Dumbass.
-$labels = Array("category", "name", "sku", "price");
-$f = fopen("files/skulist.csv", "r");
-echo "<ul class='list'>\n";
-$itemcount = 0;
-while (($line = fgetcsv($f)) !== false) {
-	// skip the first line so we don't see the column headers
-	if($itemcount > 0) {
-		$liclass='';
-		if ($itemcount % 2 == 0) { 
-			$liclass='alt '; 
-		} 
-        echo "<li>\n";
-        echo "<div class=\"".$liclass."row\">\n";
-		echo "<div class=\"col-12 col-xs-12\">\n";
-        $count = 0; //reset to 0 for each inner loop
-		$items = '1;';
-		$skuId = '';
-        foreach ($line as $cell) {
-				$itembit = htmlspecialchars($cell);
-				$items .= $itembit.";";
-                echo "<div class=\"col-md-2 col-lg-2 ".$labels[$count]."\">";
-				if ($count==2) $skuId = htmlspecialchars($cell);
-				if($count==3) echo '$';
-				echo $itembit;
-				echo "</div>\n";
-                $count++; //go up one each loop
-        }
-		echo "<div id=\"".$skuId."\" class=\"col-md-2 col-lg-2\">";
-		echo " <a class=\"addtolist btn btn-default\" id=\"minus\" data-item=\"".$items."\" href=\"#\">-</a>";
-		echo "<span class=\"qty btn btn-default\">0</span>";
-		echo "<a class=\"addtolist btn btn-default\" id=\"plus\" data-item=\"".$items."\" href=\"#\">+</a>";
-		echo "</div>\n";
-        echo "</div></div>\n";
-        echo "</li>\n";
-	}
-	$itemcount++;
-}
-echo "\n\t</ul>\n";
-fclose($f);
-?>
+<?php getStockList(); ?>
 </div>
 </div>
 </div>
@@ -255,8 +258,13 @@ $(function() {
 	$("#sendbasket").live("submit",function(e){
 		
 		var emailTo = $("#sendto").val();
-		//alert(emailTo);
-		data = sendBasket(emailTo);
+		var colleague = $("input:radio[name=colleagueId]:checked").val();
+		//console.log(colleague);
+		var bit = colleague.split("-");
+		var fromName = bit[0];
+		var fromEmail = bit[2];
+		//console.log(fromName);
+		data = sendBasket(emailTo, fromName, fromEmail);
 		$.ajax({
 		    type: "POST",
 		    url: "send.php",
@@ -333,12 +341,12 @@ function getAllItems() {
 	// TODO update this to not use forEach, since that breaks in IE8
 	local.forEach(function(entry) {
 	    //console.log(entry[4]);
-		var itemKey = entry[0];
-		var qty = parseInt(entry[1]);
-		var cat = entry[2];
-		var name = entry[3];
-		var sku = entry[4];
-		var price = parseInt(entry[5]);
+		itemKey = entry[0];
+		qty = parseInt(entry[1]);
+		cat = entry[2];
+		name = entry[3];
+		sku = entry[4];
+		price = parseInt(entry[5]);
 		sub = qty * price;
 		subtotal = subtotal + sub;
 		//console.log(subtotal);
@@ -350,9 +358,9 @@ function getAllItems() {
 		totalQty = totalQty + qty;
 	});
 	subtotal = subtotal.toFixed(2);
-	var taxrate = .12;
-	var tax = (subtotal * taxrate).toFixed(2);
-	var totalorder = parseFloat(subtotal) + parseFloat(tax);
+	taxrate = .12;
+	tax = (subtotal * taxrate).toFixed(2);
+	totalorder = parseFloat(subtotal) + parseFloat(tax);
 	totalorder = totalorder.toFixed(2);
 	stockList += '<hr>';
 	stockList += '<li>Subtotal: $'+subtotal+'</li>';
@@ -377,7 +385,7 @@ function getAllItems() {
 	$("#basket").html(stockList); //update the ul with the list items
 }
 
-function sendBasket(sendto) {
+function sendBasket(sendTo, fromName, fromEmail) {
 	var local = sortLocal();
 	//if there were no items in the database
 	// if (local.length-1 == 0) {
@@ -390,12 +398,12 @@ function sendBasket(sendto) {
 		// TODO update this to not use forEach, since that breaks in IE8
 		local.forEach(function(entry) {
 		    //console.log(entry[4]);
-			var itemKey = entry[0];
-			var qty = parseInt(entry[1]);
-			var cat = entry[2];
-			var name = entry[3];
-			var sku = entry[4];
-			var price = parseInt(entry[5]);
+			itemKey = entry[0];
+			qty = parseInt(entry[1]);
+			cat = entry[2];
+			name = entry[3];
+			sku = entry[4];
+			price = parseInt(entry[5]);
 			sub = qty * price;
 			subtotal = subtotal + sub;
 			//console.log(subtotal);
@@ -406,18 +414,20 @@ function sendBasket(sendto) {
 			totalQty = totalQty + qty;
 		});
 		subtotal = subtotal.toFixed(2);
-		var taxrate = .12;
-		var tax = (subtotal * taxrate).toFixed(2);
-		var totalorder = parseFloat(subtotal) + parseFloat(tax);
+		taxrate = .12;
+		tax = (subtotal * taxrate).toFixed(2);
+		totalorder = parseFloat(subtotal) + parseFloat(tax);
 		totalorder = totalorder.toFixed(2);
 		message += '<hr>';
 		message += 'Subtotal: $'+subtotal+'<br>';
 		message += 'Tax: $'+tax+'<br>';
 		message += 'Total: $'+totalorder+'<br>';
-		//basket = message.replace(/(<([^>]+)>)/ig,"");
 //	}
+
 	var data = {
-		to: sendto,
+		to: sendTo,
+		fromname: fromName,
+		fromemail: fromEmail,
 	    basket: message
 	};
 	return data;
