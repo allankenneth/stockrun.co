@@ -94,8 +94,7 @@ function getColleagues() {
 <div id="wrap">
 <div class="top container">
 <div id="manage">
-	<div class="panel panel-default">
-	  <div class="panel-body">
+
 <div class="row">
 
 <div class="col-4 col-lg-4">
@@ -136,18 +135,14 @@ function getColleagues() {
 	</form>
 </div>
 </div> <!--/.row -->
-</div></div>
+
 </div> <!--/#manage-->
 <div id="basketBox" class="row">
 <div class="col-12 col-lg-12">
-	<div class="panel panel-info">
-	    <div class="panel-heading">
-	      <h2 class="panel-title">Basket</h2>
-	    </div>
-	  <div class="panel-body">
-	<ul id="basket">
-	</ul>
-</div></div>
+	<div class="table-responsive">
+	<table class="table" id="basket">
+	</table>
+</div>
 </div>
 </div>
 <!-- <a href="#" class="subtotal">Subit</a> -->
@@ -358,10 +353,11 @@ function getAllItems() {
 		subtotal = subtotal + sub;
 		//console.log(subtotal);
 		//now that we have the item, lets add it as a list item
-		stockList += '<li class="dd-item" data-id="'+itemKey+'">';
+		stockList += '<tr data-id="'+itemKey+'">';
+		stockList += '<td class="dd-item">';
 		stockList += '<a href="#'+itemKey+'" class="remove btn btn-xs btn-default">x</a> 	';
-		stockList += ''+qty+' x '+cat+' - '+name+' - '+sku+' - $'+price;
-		stockList += '</li>';
+		stockList += ''+qty+' x</td><td>'+cat+'<br>'+name+'</td><td>'+sku+'</td><td>$'+price+'</td>';
+		stockList += '</tr>';
 		totalQty = totalQty + qty;
 	});
 	subtotal = subtotal.toFixed(2);
@@ -369,11 +365,10 @@ function getAllItems() {
 	tax = (subtotal * taxrate).toFixed(2);
 	totalorder = parseFloat(subtotal) + parseFloat(tax);
 	totalorder = totalorder.toFixed(2);
-	stockList += '<hr>';
-	stockList += '<li>Subtotal: $'+subtotal+'</li>';
-	stockList += '<li>Tax: $'+tax+'</li>';
-	stockList += '<li>Total: $'+totalorder+'</li>';
-	stockList += '<li>';
+	stockList += '<tr><td colspan="5">Subtotal: $'+subtotal+'</div>';
+	stockList += '<div>Tax: $'+tax+'</div>';
+	stockList += '<div>Total: $'+totalorder+'</div>';
+	stockList += '<div>';
 	stockList += '<form method="post" id="sendbasket" action="send.php">';
 	stockList += '<div>';
 	stockList += '<?php getColleagues() ?>';
@@ -381,11 +376,11 @@ function getAllItems() {
 	stockList += '<input type="text" size="20" id="sendto" name="sendto">';
 	stockList += '<button class="btn btn-sm btn-success" href="send.php">Send Basket</button>';
 	stockList += '</form>';
-	stockList += '</li>';
+	stockList += '</td></tr>';
 	
 	//if there were no items in the database
 	if (subtotal == 0) {
-		stockList = '<li class="empty">List Currently Empty</li>';
+		stockList = '<div class="empty">List Currently Empty</div>';
 	}
 	//var totalQty = local.length;
 	$(".basket span").html(totalQty);
