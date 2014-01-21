@@ -94,7 +94,8 @@ function getColleagues() {
 <div id="wrap">
 <div class="top container">
 <div id="manage">
-
+	<div class="panel panel-default">
+	  <div class="panel-body">
 <div class="row">
 
 <div class="col-4 col-lg-4">
@@ -135,12 +136,18 @@ function getColleagues() {
 	</form>
 </div>
 </div> <!--/.row -->
-
+</div></div>
 </div> <!--/#manage-->
-<div class="row">
+<div id="basketBox" class="row">
 <div class="col-12 col-lg-12">
+	<div class="panel panel-info">
+	    <div class="panel-heading">
+	      <h2 class="panel-title">Basket</h2>
+	    </div>
+	  <div class="panel-body">
 	<ul id="basket">
 	</ul>
+</div></div>
 </div>
 </div>
 <!-- <a href="#" class="subtotal">Subit</a> -->
@@ -186,9 +193,9 @@ $(function() {
 	});
 
 	$('.basket').click(function(e){
-		$('#basket').slideToggle();
+		$('#basketBox').slideToggle();
 		//window.location.href = "#basket";
-		var target = "#basket";
+		var target = "#basketBox";
 		// var targetOffset = $(target).offset().top - 60;
 		// $("#basket").animate({scrollTop: targetOffset}, 400, function(event) {
 		// 	event.preventDefault();

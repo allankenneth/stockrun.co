@@ -1,5 +1,4 @@
 <?php
-
 function getShipments() {
 	$f = fopen("files/Customer-Detail-Report.csv", "r");
 	$shipments = Array();
@@ -31,8 +30,8 @@ function displayShipments($shipments) {
 	$canpost ='http://www.canadapost.ca/cpotools/apps/track/personal/findByTrackNumber?trackingNumber=';
 	foreach($shipments as $shipment) {
 		$ship .= '<tr>';
-		$ship .= '<td class="date">'.$shipment[0].'</td>';
-		$ship .= '<td class="client"><strong>'.$shipment[1].'</strong></td>';
+		$ship .= '<td class="ship-date">'.$shipment[0].'</td>';
+		$ship .= '<td class="ship-client"><strong>'.$shipment[1].'</strong></td>';
 		$url = $canpost . $shipment[2];
 		$ship .= '<td class="track"><a target="_blank" href="'.$url.'">'.$shipment[2].'</a></td>';
 		$ship .= '<td class="transaction">'.$shipment[3].'</td>';
@@ -58,35 +57,37 @@ function displayShipments($shipments) {
 	<script src="js/respond.js"></script>
 
 </head>
-<body id="body">
-<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+<body id="shipmentsBody">
+<!-- <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
 	<div class="buttons">
 		
 	</div>
   </div>
-</div>
+</div> -->
 	
 <div id="wrap">
 	<div class="top container">
 		<div class="row">
 			<div class="col-12 col-lg-12">
 				<div id="shipments">
-					<form role="form">
+					<form id="searchform" role="form">
 					  <div class="form-group">
 						  <input type="input" class="search" placeholder="Search">
+						  <a href="#" class="reset btn btn-default" title="Reset">x</a>
 					  </div>
 					</form>
-					<table class="table">
+					<div class="table-responsive">
+					<table class="table table-striped">
 						<thead>
 						<tr>
-							<th class="sort" data-sort="date">Date</th>
+							<th class="sort" data-sort="ship-date">Date</th>
 							<th class="sort" data-sort="ship-client">Client</th>
-							<th class="sort" data-sort="tracking">Tracking #</th>
+							<th class="sort" data-sort="track">Tracking #</th>
 							<th class="sort" data-sort="transaction">Transaction ID</th>
 							<th class="sort" data-sort="ship-type">Shipping Type</th>
 							<th class="sort" data-sort="ship-weight">Weight</th>
-							<th class="sort" data-sort="name">Cost</th>
+							<th class="sort" data-sort="ship-cost">Cost</th>
 						</tr>
 						</thead>
 						<tbody class="list">
@@ -94,6 +95,7 @@ function displayShipments($shipments) {
 						<?php displayShipments($shipments) ?>
 						</tbody>
 					</table>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -104,9 +106,15 @@ function displayShipments($shipments) {
 <!-- <script src="js/jquery.scrollTo.js"></script> -->
 <script>
 $(function() {
+	$(".reset").click(function(e){
+		$(".search").val("").focus();
+		e.preventDefault();
+		//$('#searchform').submit();
+
+	});
 	$(".search").focus();
 	var options = {
-		valueNames: [ 'date', 'client','track','transaction','ship-type','ship-weight','ship-cost']
+		valueNames: [ 'ship-date', 'ship-client','track','transaction','ship-type','ship-weight','ship-cost']
 	};
 	var shipmentList = new List('shipments', options);
 });

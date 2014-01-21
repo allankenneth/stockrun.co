@@ -1,4 +1,4 @@
-body {
+#body {
 	padding-top: 60px;
 }
 .top {
@@ -8,7 +8,7 @@ body {
 	display: inline-block;
 	margin: 8px 0 0 10px;
 }
-#basket {
+#basketBox {
 /*	display: none;*/
 	margin: 0 0 20px 0;
 	padding: 0;
