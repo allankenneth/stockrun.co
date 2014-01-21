@@ -43,7 +43,7 @@ function getStockList() {
 }
 function getColleagues() {
 	$f = fopen("files/colleagues.csv", "r");
-	$colleagues = '';
+	$colleagues = '<select name="colleagueId">';
 	while (($line = fgetcsv($f)) !== false) {
         $count = 0;
         foreach ($line as $cell) {
@@ -54,18 +54,17 @@ function getColleagues() {
 				if($count == 3) $colleagueEmail = $itembit;
                 $count++; //go up one each loop
         }
-		$colleagues .= '<input type="radio" id="colleagueId'.$colleagueId.'"';
-		$colleagues .= ' value="'.$name.'-'.$title.'-'.$colleagueEmail.'"';
-		$colleagues .= ' name="colleagueId"> '; // value="'.$colleagueId.'"
-		$colleagues .= '<label for="colleagueId'.$colleagueId.'">'.$name.'</label> ';
+		$colleagues .= '<option id="colleagueId'.$colleagueId.'"';
+		$colleagues .= ' value="'.$name.'-'.$title.'-'.$colleagueEmail.'">'.$name.'</option> ';
 		// .'-'.$title.'-'.$colleagueEmail.'
 	}
+	$colleagues .= '</select>';
 	print $colleagues;
 	fclose($f);
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" manifest="/cache.manifest">
 <head>
 	<title>Store 5</title>
 	<link rel="apple-touch-icon" sizes="120x120" href="rabbit.png">
@@ -85,8 +84,17 @@ function getColleagues() {
   			<a class="btn btn-primary refresh" href="#" title="Refresh the page">&#8635;</a>
   			<a class="btn btn-primary showman" href="#manage" title="Download and upload new lists">&#9881;</a>
   		</div>
-        <div class="navbar-header">
+        <div class="pull-left">
 			<a class="btn btn-success basket" href="#basket" title="Basket">&#9776; <span>0</span></a>
+		</div>
+        <div class="pull-left" id="sendbasket">			
+			<form method="post" class="form-inline form" action="send.php">
+
+			<?php getColleagues() ?>
+
+			<input type="text" size="20" id="sendto" name="sendto">
+			<button class="btn btn-sm btn-success" href="send.php">Send Basket</button>
+			</form>
 		</div>
       </div>
     </div>
@@ -140,7 +148,7 @@ function getColleagues() {
 <div id="basketBox" class="row">
 <div class="col-12 col-lg-12">
 	<div class="table-responsive">
-	<table class="table" id="basket">
+	<table class="table table-striped" id="basket">
 	</table>
 </div>
 </div>
@@ -355,8 +363,9 @@ function getAllItems() {
 		//now that we have the item, lets add it as a list item
 		stockList += '<tr data-id="'+itemKey+'">';
 		stockList += '<td class="dd-item">';
-		stockList += '<a href="#'+itemKey+'" class="remove btn btn-xs btn-default">x</a> 	';
-		stockList += ''+qty+' x</td><td>'+cat+'<br>'+name+'</td><td>'+sku+'</td><td>$'+price+'</td>';
+;
+		stockList += ''+qty+' x</td><td>'+cat+'<br>'+name+'</td><td>'+sku+'</td><td>$'+price;
+		stockList += ' <a href="#'+itemKey+'" class="remove btn btn-xs btn-default">x</a></td>';
 		stockList += '</tr>';
 		totalQty = totalQty + qty;
 	});
@@ -368,14 +377,6 @@ function getAllItems() {
 	stockList += '<tr><td colspan="5">Subtotal: $'+subtotal+'</div>';
 	stockList += '<div>Tax: $'+tax+'</div>';
 	stockList += '<div>Total: $'+totalorder+'</div>';
-	stockList += '<div>';
-	stockList += '<form method="post" id="sendbasket" action="send.php">';
-	stockList += '<div>';
-	stockList += '<?php getColleagues() ?>';
-	stockList += '</div>';	
-	stockList += '<input type="text" size="20" id="sendto" name="sendto">';
-	stockList += '<button class="btn btn-sm btn-success" href="send.php">Send Basket</button>';
-	stockList += '</form>';
 	stockList += '</td></tr>';
 	
 	//if there were no items in the database
