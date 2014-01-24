@@ -88,13 +88,13 @@ function getColleagues() {
 			<a class="btn btn-success basket" href="#basket" title="Basket">&#9776; <span>0</span></a>
 		</div>
         <div class="pull-left" id="sendbasket">			
-			<form method="post" class="form-inline form" action="send.php">
+			<!-- <form method="post" class="form-inline form" action="send.php">
 
 			<?php getColleagues() ?>
 
 			<input type="text" size="20" id="sendto" name="sendto">
 			<button class="btn btn-sm btn-success" href="send.php">Send Basket</button>
-			</form>
+			</form> -->
 		</div>
       </div>
     </div>

@@ -1,0 +1,98 @@
+<?php
+// Set default timezone
+// date_default_timezone_set('UTC');
+$filename = $_GET["file"];
+try {
+
+	// Create (connect to) SQLite database in file
+	$file_db = new PDO('sqlite:shipments.sqlite3');
+	// Set errormode to exceptions
+	$file_db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	
+	// TODO make tracking UNIQUE, but it needs to accept NULL values.
+	// Apparently sqlite is already supposed to support this, but she just don't work.
+	$file_db->exec("CREATE TABLE IF NOT EXISTS shipments (
+						id INTEGER PRIMARY KEY AUTOINCREMENT, 
+						shipdate INTEGER, 
+						client TEXT, 
+						tracking TEXT,
+						transid INTEGER,
+						shiptype TEXT,
+						shipweight INTEGER,
+						shipcost INTEGER)");
+
+ 
+	// Prepare INSERT statement to SQLite3 file db
+	$insert = "INSERT INTO shipments (shipdate, client, tracking, transid, shiptype, shipweight, shipcost)";
+	$insert .= "VALUES (:shipdate, :client, :tracking, :transid, :shiptype, :shipweight, :shipcost)";
+	$stmt = $file_db->prepare($insert);
+
+	// Bind parameters to statement variables
+	$stmt->bindParam(':shipdate', $shipdate);
+	$stmt->bindParam(':client', $client);
+	$stmt->bindParam(':tracking', $tracking);
+	$stmt->bindParam(':transid', $transid);
+	$stmt->bindParam(':shiptype', $shiptype);
+	$stmt->bindParam(':shipweight', $shipweight);
+	$stmt->bindParam(':shipcost', $shipcost);
+
+	// Loop thru all messages and execute prepared insert statement
+	$ships = getShipments($filename);
+	foreach ($ships as $m) {
+		// Set values to bound variables
+		$shipdate = $m['shipdate'];
+		$client = $m['client'];
+		$tracking = $m['tracking'];
+		$transid = $m['transid'];
+		$shiptype = $m['shiptype']; 
+		$shipweight = $m['shipweight'];
+		$shipcost = $m['shipcost'];
+		// Execute statement
+		$stmt->execute();
+	}
+
+    // Close file db connection
+	$file_db = null;
+	//print "Success.";
+	header("Location: /store5/shipping/");
+	
+} catch(PDOException $e) {
+	// Print PDOException message
+	echo $e->getMessage();
+}
+
+function getShipments($filename) {
+	$open = "../files/".$filename;
+	$f = fopen($open, "r");
+	$ships = Array();
+	while (($line = fgetcsv($f)) !== false) {
+        $count = 0;
+        foreach ($line as $cell) {
+
+			$itembit = htmlspecialchars($cell);
+			if($count == 3) $date = $itembit;
+			//$dateformed = new DateTime($date);
+			//$dateformed = $dateformed->format('M jS');
+			if($count == 4) $track = $itembit;
+			//if($track=="null") $track = time();
+			if($count == 5) $client = $itembit;
+			if($count == 8) $transid = $itembit;
+			if($count == 9) $type = $itembit;
+			if($count == 10) $weight = $itembit;
+			if($count == 17) $cost = $itembit;
+			$count++; //go up one each loop
+        }
+		array_push($ships,['shipdate' => $date,
+							'client' => $client,
+							'tracking' => $track,
+							'transid' => $transid,
+							'shiptype' => $type,
+							'shipweight' => $weight,
+							'shipcost' => $cost]);
+	}
+	fclose($f);
+	$ships = array_reverse($ships);
+	return $ships;
+} 
+
+?>

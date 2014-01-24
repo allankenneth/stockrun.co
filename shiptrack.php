@@ -44,7 +44,7 @@ function displayShipments($shipments) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" manifest="/cache.manifest">
 <head>
 	<title>Store 5 - Shipments</title>
 	<link rel="apple-touch-icon" sizes="120x120" href="rabbit.png">
@@ -102,7 +102,7 @@ function displayShipments($shipments) {
 	</div>
 </div>
 <script src="js/jquery-1.4.2.min.js"></script>
-<script src="js/list.min.js"></script>
+<script src="js/list-1.0.2.js"></script>
 <!-- <script src="js/jquery.scrollTo.js"></script> -->
 <script>
 $(function() {
@@ -110,7 +110,6 @@ $(function() {
 		$(".search").val("").focus();
 		e.preventDefault();
 		//$('#searchform').submit();
-
 	});
 	$(".search").focus();
 	var options = {
