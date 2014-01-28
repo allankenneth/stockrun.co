@@ -16,6 +16,7 @@ try {
 						shipdate INTEGER, 
 						client TEXT, 
 						tracking TEXT,
+						tstatus, TEXT,
 						transid INTEGER,
 						shiptype TEXT,
 						shipweight INTEGER,
@@ -23,14 +24,15 @@ try {
 
  
 	// Prepare INSERT statement to SQLite3 file db
-	$insert = "INSERT INTO shipments (shipdate, client, tracking, transid, shiptype, shipweight, shipcost)";
-	$insert .= "VALUES (:shipdate, :client, :tracking, :transid, :shiptype, :shipweight, :shipcost)";
+	$insert = "INSERT INTO shipments (shipdate, client, tracking, tstatus, transid, shiptype, shipweight, shipcost)";
+	$insert .= "VALUES (:shipdate, :client, :tracking, :tstatus, :transid, :shiptype, :shipweight, :shipcost)";
 	$stmt = $file_db->prepare($insert);
 
 	// Bind parameters to statement variables
 	$stmt->bindParam(':shipdate', $shipdate);
 	$stmt->bindParam(':client', $client);
 	$stmt->bindParam(':tracking', $tracking);
+	$stmt->bindParam(':tstatus', $tstatus);
 	$stmt->bindParam(':transid', $transid);
 	$stmt->bindParam(':shiptype', $shiptype);
 	$stmt->bindParam(':shipweight', $shipweight);
@@ -43,6 +45,7 @@ try {
 		$shipdate = $m['shipdate'];
 		$client = $m['client'];
 		$tracking = $m['tracking'];
+		$tstatus = $m['tstatus'];
 		$transid = $m['transid'];
 		$shiptype = $m['shiptype']; 
 		$shipweight = $m['shipweight'];
@@ -85,6 +88,7 @@ function getShipments($filename) {
 		array_push($ships,['shipdate' => $date,
 							'client' => $client,
 							'tracking' => $track,
+							'tstatus' => null,
 							'transid' => $transid,
 							'shiptype' => $type,
 							'shipweight' => $weight,

@@ -141,6 +141,7 @@ function getColleagues() {
 			<button type="submit" class="btn btn-success" value="Upload">Upload CSV</button>
 		</div>
 	</form>
+	<h3><a href="shipping/">Shipping Tracker</a></h3>
 </div>
 </div> <!--/.row -->
 

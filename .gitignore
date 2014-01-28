@@ -1,4 +1,5 @@
 config.php
+shipping/canpost/REST/tracking/user.ini
 
 # Compiled source #
 ###################

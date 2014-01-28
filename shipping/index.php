@@ -53,11 +53,12 @@
 	<table class="table table-striped">
 		<thead>
 		<tr>
-			<th class="sort" data-sort="id">ID</th>
+			<!-- <th class="sort" data-sort="id">ID</th> -->
 			<th class="sort" data-sort="ship-date">Shipped</th>
 			<th class="sort" data-sort="ship-client">Client</th>
 			<th class="sort" data-sort="track">Tracking #</th>
-			<th class="sort" data-sort="transaction">Transaction ID</th>
+			<th class="sort" data-sort="tstatus">Status</th>
+			<th class="sort" data-sort="transaction">Trans. ID</th>
 			<th class="sort" data-sort="ship-type">Shipment Type</th>
 			<th class="sort" data-sort="ship-weight">Ship Weight</th>
 			<th class="sort" data-sort="ship-cost">Ship Cost</th>
@@ -65,40 +66,44 @@
 	</thead>
 	<tbody class="list">
 	<?php
-	  // Set default timezone
-	  // date_default_timezone_set('UTC');
-	  try {
+	$canpost ='http://www.canadapost.ca/cpotools/apps/track/personal/findByTrackNumber?trackingNumber=';
+	// Set default timezone
+	// date_default_timezone_set('UTC');
+	try {
 		// Create (connect to) SQLite database in file
 		$file_db = new PDO('sqlite:shipments.sqlite3');
+		
 		// Set errormode to exceptions
-		$file_db->setAttribute(PDO::ATTR_ERRMODE, 
-		                        PDO::ERRMODE_EXCEPTION);
+		$file_db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		
 		// Select all data from file db messages table 
 		$result = $file_db->query('SELECT * FROM shipments ORDER BY shipdate DESC');
 		foreach($result as $row) {
 			$dateformed = new DateTime($row['shipdate']);
 			$dateformed = $dateformed->format('M jS');
-		  echo "<tr>\n";
-		  echo "<td class=\"rowid\">" . $row['id'] . "</td>\n";
-		  echo "<td class=\"ship-date\">" . $dateformed . "</td>\n";
-		  echo "<td class=\"ship-client\">" . $row['client'] . "</td>\n";
-		  echo "<td class=\"track\">" . $row['tracking'] . "</td>\n";
-		  echo "<td class=\"tranasction\">" . $row['transid'] . "</td>\n";
-		  echo "<td class=\"ship-type\">" . $row['shiptype'] . "</td>\n";
-		  echo "<td class=\"ship-weight\">" . number_format($row['shipweight'],2) . "kg</td>\n";
-		  echo "<td class=\"ship-cost\">$" . number_format($row['shipcost'],2) . "</td>\n";
-		  echo "</tr>\n";
+			echo "<tr>\n";
+			//echo "<td class=\"rowid\">" . $row['id'] . "</td>\n";
+			echo "<td class=\"ship-date\">" . $dateformed . "</td>\n";
+			echo "<td class=\"ship-client\"><strong>" . $row['client'] . "</strong></td>\n";
+			$url = $canpost . $row['tracking'];
+			echo "<td class=\"track\"><a href=\"".$url."\" target=\"_blank\">" . $row['tracking'] . "</td>\n";
+			echo "<td class=\"tstatus\">" . $row['tstatus'] . "</td>\n";
+			echo "<td class=\"tranasction\">" . $row['transid'] . "</td>\n";
+			echo "<td class=\"ship-type\">" . $row['shiptype'] . "</td>\n";
+			echo "<td class=\"ship-weight\">" . number_format($row['shipweight'],2) . "kg</td>\n";
+			echo "<td class=\"ship-cost\">$" . number_format($row['shipcost'],2) . "</td>\n";
+			echo "</tr>\n";
 		}
-	/**************************************
-	* Close db connections                *
-	**************************************/
-	//$file_db->exec("DROP TABLE shipments");
-	// Close file db connection
-	$file_db = null;	
-  } catch(PDOException $e) {
-    // Print PDOException message
-    echo "<tr><td colspan=8>".$e->getMessage()."</td></tr>";
-  }
+		/**************************************
+		* Close db connections                *
+		**************************************/
+		//$file_db->exec("DROP TABLE shipments");
+		// Close file db connection
+		$file_db = null;	
+	} catch(PDOException $e) {
+		// Print PDOException message
+		echo "<tr><td colspan=8>".$e->getMessage()."</td></tr>";
+	}
 ?>
 	</table>
 					</div>
