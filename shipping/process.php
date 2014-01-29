@@ -1,6 +1,8 @@
 <?php
 // Set default timezone
 // date_default_timezone_set('UTC');
+// TODO check to see if the file already exists and offer to reprocess
+// it or overwrite it
 $filename = $_GET["file"];
 try {
 
@@ -65,6 +67,7 @@ try {
 }
 
 function getShipments($filename) {
+
 	$open = "../files/".$filename;
 	$f = fopen($open, "r");
 	$ships = Array();
@@ -76,22 +79,23 @@ function getShipments($filename) {
 	        foreach ($line as $cell) {			
 				$itembit = htmlspecialchars($cell);
 				if($count == 3) $date = $itembit;
-				//$dateformed = new DateTime($date);
-				//$dateformed = $dateformed->format('M jS');
 				if($count == 4) $track = $itembit;
-				//if($track=="null") $track = time();
 				if($count == 5) $client = $itembit;
 				if($count == 8) $transid = $itembit;
 				if($count == 9) $type = $itembit;
 				if($count == 10) $weight = $itembit;
 				if($count == 17) $cost = $itembit;
-
-				$count++; //go up one each loop
+				$count++;
 	        }
+			if($track == "null") {
+				$initstat = "No tracking provided.";
+			} else {
+				$initstat = "Submitted to Canada Post; awaiting pickup.";
+			}
 			array_push($ships,['shipdate' => $date,
 								'client' => $client,
 								'tracking' => $track,
-								'tstatus' => null,
+								'tstatus' => $initstat,
 								'transid' => $transid,
 								'shiptype' => $type,
 								'shipweight' => $weight,

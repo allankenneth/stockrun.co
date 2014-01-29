@@ -61,7 +61,7 @@
 			<th class="sort" data-sort="transaction">Trans. ID</th>
 			<th class="sort" data-sort="ship-type">Shipment Type</th>
 			<th class="sort" data-sort="ship-weight">Ship Weight</th>
-			<th class="sort" data-sort="ship-cost">Ship Cost</th>
+			<!-- <th class="sort" data-sort="ship-cost">Ship Cost</th> -->
 		</tr>
 	</thead>
 	<tbody class="list">
@@ -91,7 +91,7 @@
 			echo "<td class=\"tranasction\">" . $row['transid'] . "</td>\n";
 			echo "<td class=\"ship-type\">" . $row['shiptype'] . "</td>\n";
 			echo "<td class=\"ship-weight\">" . number_format($row['shipweight'],2) . "kg</td>\n";
-			echo "<td class=\"ship-cost\">$" . number_format($row['shipcost'],2) . "</td>\n";
+			//echo "<td class=\"ship-cost\">$" . number_format($row['shipcost'],2) . "</td>\n";
 			echo "</tr>\n";
 		}
 		/**************************************
