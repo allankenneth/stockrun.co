@@ -1,3 +1,15 @@
+tr td {
+	font-size: 16px;
+}
+tr.intransit {
+	background: #D8EDF6;
+}
+tr.delivered {
+	background: #DEF0DA !important;
+}
+tr.investigate {
+	background: #F3DEDE;
+}
 #sendbasket {
 	padding-top: 8px;
 }

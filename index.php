@@ -68,6 +68,7 @@ function getColleagues() {
 <head>
 	<title>Store 5</title>
 	<link rel="apple-touch-icon" sizes="120x120" href="rabbit.png">
+	<link id="page_favicon" href="favicon.ico" rel="shortcut icon" type="image/x-icon">
 	<meta name="viewport" content="width=device-width, user-scalable=no">
 	<meta name="mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-capable" content="yes">

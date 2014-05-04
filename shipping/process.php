@@ -7,7 +7,7 @@ $filename = $_GET["file"];
 try {
 
 	// Create (connect to) SQLite database in file
-	$file_db = new PDO('sqlite:shipments.sqlite3');
+	$file_db = new PDO('sqlite:/home/allan/fairmont/stockrun.co/store5/shipping/db/shipments.sqlite3');
 	// Set errormode to exceptions
 	$file_db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	
@@ -19,15 +19,17 @@ try {
 						client TEXT, 
 						tracking TEXT,
 						tstatus, TEXT,
+						tstatdate INTEGER,
 						transid INTEGER,
 						shiptype TEXT,
 						shipweight INTEGER,
-						shipcost INTEGER)");
+						shipcost INTEGER,
+						flag TEXT)");
 
  
 	// Prepare INSERT statement to SQLite3 file db
-	$insert = "INSERT INTO shipments (shipdate, client, tracking, tstatus, transid, shiptype, shipweight, shipcost)";
-	$insert .= "VALUES (:shipdate, :client, :tracking, :tstatus, :transid, :shiptype, :shipweight, :shipcost)";
+	$insert = "INSERT INTO shipments (shipdate, client, tracking, tstatus, tstatdate, transid, shiptype, shipweight, shipcost, flag)";
+	$insert .= "VALUES (:shipdate, :client, :tracking, :tstatus, :tstatdate, :transid, :shiptype, :shipweight, :shipcost, :flag)";
 	$stmt = $file_db->prepare($insert);
 
 	// Bind parameters to statement variables
@@ -35,10 +37,12 @@ try {
 	$stmt->bindParam(':client', $client);
 	$stmt->bindParam(':tracking', $tracking);
 	$stmt->bindParam(':tstatus', $tstatus);
+	$stmt->bindParam(':tstatdate', $tstatdate);
 	$stmt->bindParam(':transid', $transid);
 	$stmt->bindParam(':shiptype', $shiptype);
 	$stmt->bindParam(':shipweight', $shipweight);
 	$stmt->bindParam(':shipcost', $shipcost);
+	$stmt->bindParam(':flag', $flag);
 
 	// Loop thru all messages and execute prepared insert statement
 	$ships = getShipments($filename);
@@ -48,10 +52,12 @@ try {
 		$client = $m['client'];
 		$tracking = $m['tracking'];
 		$tstatus = $m['tstatus'];
+		$tstatdate = $m['tstatdate'];
 		$transid = $m['transid'];
 		$shiptype = $m['shiptype']; 
 		$shipweight = $m['shipweight'];
 		$shipcost = $m['shipcost'];
+		$flag = $m['flag'];
 		// Execute statement
 		$stmt->execute();
 	}
@@ -59,23 +65,26 @@ try {
     // Close file db connection
 	$file_db = null;
 	//print "Success.";
-	header("Location: /store5/shipping/");
+	//header("Location: /store5/shipping/");
 	
 } catch(PDOException $e) {
 	// Print PDOException message
 	echo $e->getMessage();
 }
 
+// TODO Make this odempotent
 function getShipments($filename) {
 
 	$open = "../files/".$filename;
 	$f = fopen($open, "r");
 	$ships = Array();
 	$linecount = 0;
+	$tstatdate = 0;
 	while (($line = fgetcsv($f)) !== false) {
 		// Skip the first line (of headers)
 		if($linecount > 0) {
 	        $count = 0;
+		$flag = 'enroute';
 	        foreach ($line as $cell) {			
 				$itembit = htmlspecialchars($cell);
 				if($count == 3) $date = $itembit;
@@ -96,10 +105,12 @@ function getShipments($filename) {
 								'client' => $client,
 								'tracking' => $track,
 								'tstatus' => $initstat,
+								'tstatdate' => $tstatdate,
 								'transid' => $transid,
 								'shiptype' => $type,
 								'shipweight' => $weight,
-								'shipcost' => $cost]);
+								'shipcost' => $cost,
+								'flag' => $flag]);
 		}
 		$linecount++;
 	}
